@@ -1,25 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.zhy.autolayout.AutoLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.zhy.autolayout.AutoRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-
-    <EditText
-        android:id="@+id/et_user"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="用户名" />
-
-    <EditText
-        android:id="@+id/et_pass"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="密码" />
-
     <Button
         android:id="@+id/btn_login"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="20dp"
+        android:text="获取appkey"
+        android:textColor="@color/white"
+        android:background="@drawable/comm_btn_nor"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-</com.zhy.autolayout.AutoLinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/tv_key"
+        android:layout_margin="20dp"
+        android:textSize="18sp"
+        />
+
+
+</com.zhy.autolayout.AutoRelativeLayout>

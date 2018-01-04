@@ -2,9 +2,10 @@ package com.dqm.mvpframe.http;
 
 import android.support.v7.appcompat.BuildConfig;
 
-import com.google.gson.Gson;
+import com.dqm.mvpframe.Constants;
 
 import java.util.concurrent.TimeUnit;
+
 
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -17,37 +18,42 @@ import retrofit2.converter.gson.GsonConverterFactory;
  */
 public class RetrofitHelper {
 
+    private static final int TIME = 10;
     private static OkHttpClient okHttpClient = null;
-    private static Api api;
 
-    public static Api getApi() {
+    public static <T> T createApi(Class<T> clazz) {
+        return createApi(clazz, Constants.HOST);
+    }
+
+    public static <T> T createApi(Class<T> clazz, String url) {
         initOkHttp();
-        if (api == null) {
-            Retrofit retrofit = new Retrofit.Builder()
-                    .client(okHttpClient)
-                    .baseUrl(Api.HOST)
-                    .addConverterFactory(GsonConverterFactory.create(new Gson()))
-                    .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-                    .build();
-            api = retrofit.create(Api.class);
-        }
-        return api;
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(url)
+                .client(okHttpClient)
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        return retrofit.create(clazz);
     }
+
     private static void initOkHttp() {
-        if (okHttpClient == null) {
-            OkHttpClient.Builder builder = new OkHttpClient.Builder();
-            if (BuildConfig.DEBUG) {
-                HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
-                loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BASIC);
-                builder.addInterceptor(loggingInterceptor);
-            }
-            //设置超时
-            builder.connectTimeout(20, TimeUnit.SECONDS);
-            builder.readTimeout(20, TimeUnit.SECONDS);
-            builder.writeTimeout(20, TimeUnit.SECONDS);
-            //错误重连
-            builder.retryOnConnectionFailure(true);
-            okHttpClient = builder.build();
+        OkHttpClient.Builder builder = new OkHttpClient.Builder();
+        if (BuildConfig.DEBUG) {
+            HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
+            loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BASIC);
+            builder.addInterceptor(loggingInterceptor);
         }
+//        SSL证书
+        builder.sslSocketFactory(TrustManager.getUnsafeOkHttpClient());
+        builder.hostnameVerifier(new TrustManager.TrustAllHostnameVerifier());
+        //设置超时
+        builder.connectTimeout(TIME, TimeUnit.SECONDS);
+        builder.readTimeout(TIME, TimeUnit.SECONDS);
+        builder.writeTimeout(TIME, TimeUnit.SECONDS);
+        //错误重连
+        builder.retryOnConnectionFailure(true);
+        okHttpClient = builder.build();
+
     }
+
 }

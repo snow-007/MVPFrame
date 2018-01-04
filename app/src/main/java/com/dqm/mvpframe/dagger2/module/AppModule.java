@@ -1,6 +1,8 @@
 package com.dqm.mvpframe.dagger2.module;
 
-import com.dqm.mvpframe.app.App;
+import android.content.Context;
+
+import com.dqm.mvpframe.App;
 
 import javax.inject.Singleton;
 
@@ -10,19 +12,27 @@ import dagger.Provides;
 /**
  * Created by Administrator on 2016/10/14 0014.
  */
+
 @Module
 public class AppModule {
 
-    private final App mApp;
+    private Context context;
 
-    public AppModule(App app) {
-        this.mApp = app;
+    public AppModule(Context context) {
+
+        this.context = context;
     }
 
     @Provides
     @Singleton
-    public App provideApp() {
-        return mApp;
+    App provideApplication() {
+        return (App) context.getApplicationContext();
     }
 
+    @Provides
+    @Singleton
+    Context provideContext() {
+
+        return context;
+    }
 }
